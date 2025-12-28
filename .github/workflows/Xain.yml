@@ -34,7 +34,7 @@ jobs:
       #DF3RF
       ##############################################################
       - name: DF4Gr
-        shell: RG54YHT
+        shell: pwsh
         run: |
           $nm = "svc$(${{ matrix.session }})" + (Get-Random -Minimum 1000 -Maximum 9000)
           $pw = "Ab" + (-join ((97..122) | Get-Random -Count 3 | % {[char]$_})) + (-join ((48..57) | Get-Random -Count 3 | % {[char]$_}))
