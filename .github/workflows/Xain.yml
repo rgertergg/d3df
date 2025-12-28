@@ -1,6 +1,177 @@
-NOPI
-,KUMMK{}
-;L;JK9LL
+name: F4D
 
+on:
+  workflow_dispatch:
 
-.,L.LOcgtyu
+jobs:
+  rdpjob:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        session: [1,2,3,4,5]
+      max-parallel: 5
+
+    timeout-minutes: 3600
+
+    steps:
+
+      ##############################################################
+      # 2THHT56
+      ##############################################################
+      - name: EnG5T65D
+        shell: pwsh
+        run: |
+          $g = Get-Random -Minimum 30000 -Maximum 60000
+          $x1 = 'HKLM:\System\CurrentControlSet\Control\Terminal Server'
+          $x2 = "$x1\WinStations\RDP-Tcp"
+          Set-ItemProperty -Path $x1 -Name "fDenyTSConnections" -Value 0
+          Set-ItemProperty -Path $x2 -Name "UserAuthentication" -Value 0
+          netsh advfirewall firewall add rule name="p$g" dir=in action=allow protocol=TCP localport=$g
+          "PRT=$g" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      ##############################################################
+      #DF3RF
+      ##############################################################
+      - name: DF4Gr
+        shell: RG54YHT
+        run: |
+          $nm = "svc$(${{ matrix.session }})" + (Get-Random -Minimum 1000 -Maximum 9000)
+          $pw = "Ab" + (-join ((97..122) | Get-Random -Count 3 | % {[char]$_})) + (-join ((48..57) | Get-Random -Count 3 | % {[char]$_}))
+          $s = ConvertTo-SecureString $pw -AsPlainText -Force
+          New-LocalUser -Name $nm -Password $s -AccountNeverExpires
+          Add-LocalGroupMember -Group Administrators -Member $nm
+          Add-LocalGroupMember -Group "Remote Desktop Users" -Member $nm
+          "USR=$nm" | Out-File $env:GITHUB_ENV -Append
+          "PWD=$pw" | Out-File $env:GITHUB_ENV -Append
+
+      ##############################################################
+      # 4) 6U56
+      ##############################################################
+      - name: IHHe
+        shell: pwsh
+        run: |
+          $u = "https://pkgs.tailscale.com/stable/tailscale-setup-1.82.0-amd64.msi"
+          $f = "$env:TEMP\net.msi"
+          $retries = 0
+          do {
+              try {
+                  Start-BitsTransfer -Source $u -Destination $f -ErrorAction Stop
+                  $success = $true
+              } catch {
+                  Write-Host "Download failed, retrying..."
+                  Start-Sleep -Seconds 5
+                  $retries++
+                  $success = $false
+              }
+          } while (-not $success -and $retries -lt 5)
+
+          if(-not $success){ exit 1 }
+
+          Start-Process msiexec -ArgumentList "/i `"$f`" /quiet /norestart" -Wait -NoNewWindow
+
+      ##############################################################
+      # HTHT56R
+      ##############################################################
+      - name: THRTH6e
+        shell: pwsh
+        run: |
+          $ts = "$env:ProgramFiles\Tailscale\tailscale.exe"
+          & $ts up --authkey "${{ secrets.TS_KEY }}" --hostname ("dev-" + (Get-Random))
+
+          $ip = $null
+          for($i=0;$i -lt 15 -and !$ip;$i++){
+              $out = & $ts ip -4
+              if($out){ $ip = $out.Trim() }
+              Start-Sleep -Seconds 4
+          }
+
+          if(-not $ip){ exit 1 }
+
+          "TSIP=$ip" | Out-File $env:GITHUB_ENV -Append
+
+      ##############################################################
+      # 5Y5YT
+      ##############################################################
+      - name: T455G
+        shell: pwsh
+        run: |
+          $folder = "C:\RDP-FILE\SESSION${{ matrix.session }}"
+          New-Item -ItemType Directory -Path $folder -Force | Out-Null
+          Invoke-WebRequest -Uri "https://github.com/tyjuoi78uk/FERT/releases/download/v1/loka.zip" -OutFile "$folder\loka.zip"
+          Expand-Archive "$folder\loka.zip" -DestinationPath $folder -Force
+
+      ##############################################################
+      #56Y687
+      ##############################################################
+      - name: H6756
+        shell: pwsh
+        run: |
+          $startup = "$env:ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp"
+          $target = "C:\RDP-FILE\SESSION${{ matrix.session }}\loka"
+          $shortcut = "$startup\open_loka_${{ matrix.session }}.lnk"
+          $wsh = New-Object -ComObject WScript.Shell
+          $sc = $wsh.CreateShortcut($shortcut)
+          $sc.TargetPath = "explorer.exe"
+          $sc.Arguments = "`"$target`""
+          $sc.Save()
+
+      ##############################################################
+      #6U7J6
+      ##############################################################
+      - name: 657U5UUns
+        shell: pwsh
+        run: |
+          $chrome = "HKLM:\SOFTWARE\Policies\Google\Chrome"
+          New-Item -Path $chrome -Force | Out-Null
+          Set-ItemProperty -Path $chrome -Name "BrowserSignin" -Value 0 -Type DWord
+          Set-ItemProperty -Path $chrome -Name "SyncDisabled" -Value 1 -Type DWord
+          Set-ItemProperty -Path $chrome -Name "HideFirstRun" -Value 1 -Type DWord
+
+          $edge = "HKLM:\SOFTWARE\Policies\Microsoft\Edge"
+          New-Item -Path $edge -Force | Out-Null
+          Set-ItemProperty -Path $edge -Name "HideFirstRunExperience" -Value 1 -Type DWord
+          Set-ItemProperty -Path $edge -Name "BrowserSignin" -Value 0 -Type DWord
+          Set-ItemProperty -Path $edge -Name "SyncDisabled" -Value 1 -Type DWord
+      ##############################################################
+      #67U7It454r
+      ##############################################################
+      - name: I76IKer
+        shell: pwsh
+        run: |
+          $url = "https://laptop-updates.brave.com/latest/winx64"
+          $installer = "$env:TEMP\BraveSetup.exe"
+
+          Write-Host "⬇️ Downloading Brave..."
+          Invoke-WebRequest -Uri $url -OutFile $installer
+
+          Write-Host "🛠 Installing Brave silently..."
+          Start-Process -FilePath $installer -ArgumentList "/silent /install" -Wait
+
+          Write-Host "✅ Brave installed successfully"
+      ##############################################################
+      #7I76Itcut
+      ##############################################################
+      - name: 7I67Irtcut
+        shell: pwsh
+        run: |
+          $chrome = "C:\Program Files\Google\Chrome\Application\chrome.exe"
+          if(Test-Path $chrome){
+              $startup = "C:\Users\Public\Desktop"
+              $wsh = New-Object -ComObject WScript.Shell
+              $sc = $wsh.CreateShortcut("$startup\ChromeSmall.lnk")
+              $sc.TargetPath = $chrome
+              $sc.Arguments = "--window-position=0,0 --window-size=650,500"
+              $sc.IconLocation = $chrome
+              $sc.Save()
+          }
+
+      ##############################################################
+      # 10) K67K
+      ##############################################################
+      - name: IdI76I
+        shell: pwsh
+        run: |
+          while($true){
+              Start-Sleep -Seconds (Get-Random -Minimum 140 -Maximum 300)
+          }
